@@ -25,12 +25,12 @@ export class ImageModule implements IImageModule {
         return {
             width: info.width,
             height: info.height,
-            grayscale: gsPixels
+            pixels: gsPixels
         }
     }
 
     async build(fileName: string, filtered: TransformType) {
-        const buffer = Buffer.from(filtered.grayscale)
+        const buffer = Buffer.from(filtered.pixels)
 
         await sharp(buffer, {
             raw: {

@@ -1,5 +1,5 @@
 type TransformType = {
-    width: number,
-    height: number,
-    grayscale: number[]
+    width: number
+    height: number
+    pixels: number[]
 }

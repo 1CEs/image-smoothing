@@ -1,3 +1,4 @@
+import { FilterModule } from "./modules/filter.module"
 import { ImageModule } from "./modules/image.module"
 
 (async () => {
@@ -7,10 +8,11 @@ import { ImageModule } from "./modules/image.module"
 async function main() {
     try {
         const imagePath = 'images/salt/salt1.png'
-        const instance = new ImageModule(imagePath)
-        const arrBuff = await instance.transform()
-        const saved = await instance.build('output.png', arrBuff)
-        console.log(saved)
+        const imageModule = new ImageModule(imagePath)
+        const transformed = await imageModule.transform()
+
+        const filterModule = new FilterModule(transformed)
+        console.log(filterModule.medianFilter().pixels)
     } catch (error) {
         console.log('Err:', error)
     }
