@@ -1,6 +1,7 @@
-import type { BunFile } from "bun";
-import type { IImageModule } from "./interface/iimage.module";
-import sharp from "sharp";
+import type { BunFile } from "bun"
+import type { IImageModule } from "./interface/iimage.module"
+import sharp from "sharp"
+import type { FilterModule } from "./filter.module"
 
 export class ImageModule implements IImageModule {
     private _file: BunFile
@@ -42,5 +43,24 @@ export class ImageModule implements IImageModule {
 
         return `Image saved to output/${fileName}` 
     }
+
+    apply(module: FilterModule, times: number = 3, type: FilterType) {
+        let filtered: TransformType = {} as TransformType
+
+        for(let i = 0; i < times; i++) {
+            switch(type) {
+                case 'median':
+                    filtered = module.medianFilter(3)
+                    break
+                case 'average':
+                    filtered = module.averageFilter()
+                    break
+                default: filtered = module.medianFilter(3)
+            }
+            module.transformedImage = filtered
+        }
+        
+        return filtered
+    }   
 
 }

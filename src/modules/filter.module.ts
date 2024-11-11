@@ -3,6 +3,10 @@ import type { IFilterModule } from "./interface/ifilter.module";
 export class FilterModule implements IFilterModule {
     constructor(private _transformedImage: TransformType) { }
 
+    public set transformedImage(transformed: TransformType) {
+        this._transformedImage = transformed
+    }
+
     medianFilter(maskSize: number = 3) {
         const halfMaskSize = Math.floor(maskSize / 2)
         const arr = this._reshapeArray()

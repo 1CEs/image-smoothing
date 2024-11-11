@@ -3,3 +3,5 @@ type TransformType = {
     height: number
     pixels: number[]
 }
+
+type FilterType = 'median' | 'average'
