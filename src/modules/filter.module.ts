@@ -1,4 +1,4 @@
-import type { IFilterModule } from "./interface/ifilter.module";
+import type { IFilterModule } from "./interface/ifilter.module"
 
 export class FilterModule implements IFilterModule {
     constructor(private _transformedImage: TransformType) { }
@@ -9,30 +9,31 @@ export class FilterModule implements IFilterModule {
 
     medianFilter(maskSize: number = 3) {
         const halfMaskSize = Math.floor(maskSize / 2)
-        const arr = this._reshapeArray()
-        const { width, height } = this._transformedImage
-        const filtered: number[] = []
-        
-        for(let y = 0; y < height; y++){
-            for(let x = 0; x < width; x++){
-                const neigbors: number[] = []
+        const { width, height, pixels } = this._transformedImage
+        const filtered: number[][] = []
 
-                for(let ky = - halfMaskSize; ky <= halfMaskSize; ky++) {
-                    for(let kx = -halfMaskSize; kx <= halfMaskSize; kx++) {
+        for (let y = 0; y < height; y++) {
+            const row: number[] = []
+            for (let x = 0; x < width; x++) {
+                const neighbors: number[] = []
+
+                for (let ky = -halfMaskSize; ky <= halfMaskSize; ky++) {
+                    for (let kx = -halfMaskSize; kx <= halfMaskSize; kx++) {
                         const nx = x + kx
                         const ny = y + ky
 
-                        if(nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                            neigbors.push(arr[ny][nx])
+                        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                            neighbors.push(pixels[ny][nx])
                         }
                     }
                 }
 
-                neigbors.sort((a, b) => a - b)
-                const median = neigbors[Math.floor(neigbors.length / 3)]
+                neighbors.sort((a, b) => a - b)
+                const median = neighbors[Math.floor(neighbors.length / 2)]
 
-                filtered.push(median)
+                row.push(median)
             }
+            filtered.push(row)
         }
 
         return { ...this._transformedImage, pixels: filtered }
@@ -40,17 +41,7 @@ export class FilterModule implements IFilterModule {
 
     averageFilter() {
         const { width, height } = this._transformedImage
-        const filtered: number[] = []
+        const filtered: number[][] = []
         return { ...this._transformedImage, pixels: filtered }
-    }
-
-    private _reshapeArray() {
-        const { pixels, height, width } = this._transformedImage
-
-        const array2D = []
-        for (let y = 0; y < height; y++) {
-            array2D.push(pixels.slice(y * width, (y + 1) * width))
-        }
-        return array2D
     }
 }
