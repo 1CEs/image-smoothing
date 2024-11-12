@@ -42,7 +42,10 @@ export class ImageModule implements IImageModule {
         }
     }
 
-    async build(fileName: string, filtered: TransformType) {
+    async build(filtered: TransformType) {
+        const directory = this._file.name?.split('/')[1]
+        const fileName = this._file.name?.split('/')[2]
+        const outputPath = `output/${directory}/${fileName}`
         const buffer = Buffer.from(filtered.pixels.flat())
 
         await sharp(buffer, {
@@ -51,9 +54,9 @@ export class ImageModule implements IImageModule {
                 height: filtered.height,
                 channels: 1
             }
-        }).toFile('output/' + fileName)
+        }).toFile(outputPath)
 
-        return `Image saved to output/${fileName}` 
+        return `Image saved to ${outputPath}` 
     }
 
     apply(module: FilterModule, times: number = 3, type: FilterType) {
@@ -65,7 +68,7 @@ export class ImageModule implements IImageModule {
                     filtered = module.medianFilter(3)
                     break
                 case 'average':
-                    filtered = module.averageFilter()
+                    filtered = module.averageFilter(3)
                     break
                 default: filtered = module.medianFilter(3)
             }
