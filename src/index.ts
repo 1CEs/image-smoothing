@@ -7,7 +7,8 @@ import { ImageModule } from "./modules/image.module"
 
 async function main() {
     try {
-        const imagePath = 'images/salt/salt1.png'
+        console.log('Running script')
+        const imagePath = 'images/salt/salt2.png'
         const imageModule = new ImageModule(imagePath)
         const transformed = await imageModule.transform()
 

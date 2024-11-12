@@ -39,9 +39,35 @@ export class FilterModule implements IFilterModule {
         return { ...this._transformedImage, pixels: filtered }
     }
 
-    averageFilter() {
-        const { width, height } = this._transformedImage
+    averageFilter(maskSize: number = 3) {
+        const halfMaskSize = Math.floor(maskSize / 2)
+        const { width, height, pixels } = this._transformedImage
         const filtered: number[][] = []
+
+        for (let y = 0; y < height; y++) {
+            const row: number[] = []
+            for (let x = 0; x < width; x++) {
+                let sum = 0
+                let count = 0
+
+                for (let ky = -halfMaskSize; ky <= halfMaskSize; ky++) {
+                    for (let kx = -halfMaskSize; kx <= halfMaskSize; kx++) {
+                        const nx = x + kx
+                        const ny = y + ky
+
+                        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                            sum += pixels[ny][nx]
+                            count++
+                        }
+                    }
+                }
+
+                const average = Math.floor(sum / count)
+                row.push(average)
+            }
+            filtered.push(row)
+        }
+
         return { ...this._transformedImage, pixels: filtered }
     }
 }
