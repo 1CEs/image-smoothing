@@ -8,12 +8,12 @@ import { ImageModule } from "./modules/image.module"
 async function main() {
     try {
         console.log('Running script')
-        const imagePath = 'images/gaussian/gaussian3.png'
+        const imagePath = 'images/gaussian/gaussian1.png'
         const imageModule = new ImageModule(imagePath)
         const transformed = await imageModule.transform()
 
         const filterModule = new FilterModule(transformed)
-        const filtered = imageModule.apply(filterModule, 3, "average")
+        const filtered = imageModule.apply(filterModule, 1, "average")
 
         const saved = await imageModule.build(filtered)
         console.log(saved)

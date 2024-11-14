@@ -10,30 +10,33 @@ export class FilterModule implements IFilterModule {
     medianFilter(maskSize: number = 3) {
         const halfMaskSize = Math.floor(maskSize / 2)
         const { width, height, pixels } = this._transformedImage
-        const filtered: number[][] = []
+        const filtered: number[][] = Array.from({ length: height }, () => Array(width).fill(0))
 
-        for (let y = 0; y < height; y++) {
-            const row: number[] = []
-            for (let x = 0; x < width; x++) {
-                const neighbors: number[] = []
+        for (let row = 1; row < height; row++) {
+            for (let col = 1; col < width; col++) {
 
-                for (let ky = -halfMaskSize; ky <= halfMaskSize; ky++) {
-                    for (let kx = -halfMaskSize; kx <= halfMaskSize; kx++) {
-                        const nx = x + kx
-                        const ny = y + ky
-
-                        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                            neighbors.push(pixels[ny][nx])
+                // Create the 3x3 filter mask
+                const mask: number[] = []
+                for (let i = -halfMaskSize; i <= halfMaskSize; i++) {
+                    for (let j = -halfMaskSize; j <= halfMaskSize; j++) {
+                        const neighborRow = row + i;
+                        const neighborCol = col + j;
+                        if (
+                            neighborRow >= 0 &&
+                            neighborRow < height &&
+                            neighborCol >= 0 &&
+                            neighborCol < width
+                        ) {
+                            mask.push(pixels[neighborRow][neighborCol])
                         }
                     }
                 }
 
-                neighbors.sort((a, b) => a - b)
-                const median = neighbors[Math.floor(neighbors.length / 2)]
-
-                row.push(median)
+                // Sorted the neighbors pixels and set the mid pixel into the filtered array
+                const sortedNeighbors = mask.sort((a, b) => a - b)
+                const median = sortedNeighbors[Math.floor(sortedNeighbors.length / 2)]
+                filtered[row][col] = median;
             }
-            filtered.push(row)
         }
 
         return { ...this._transformedImage, pixels: filtered }
@@ -58,7 +61,7 @@ export class FilterModule implements IFilterModule {
                         }
                     }
                 }
-                filtered[y][x] = sum / count
+                filtered[y][x] = Math.floor(sum / count)
             }
         }
 
